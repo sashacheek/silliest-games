@@ -30,7 +30,7 @@ fetch("clouds.json")
     const col = document.getElementById(color);
     col.style.backgroundColor = color;
     col.addEventListener("click", () => {
-      const prevColor = document.getElementById(currentColor);
+      const prevColor = currentColor;
       if (prevColor) {
         prevColor.style.border = "0px";
       }
@@ -39,7 +39,7 @@ fetch("clouds.json")
       if (color == "black") {
         col.style.border = "2px solid lightgrey";
       }
-      currentColor = color;
+      currentColor = col;
       erasing = false;
   })}
 });
@@ -214,3 +214,17 @@ const eraser = document.getElementById("eraser");
 eraser.addEventListener("click", () => {
   erasing = true;
 });
+
+const tool = document.getElementById("tools");
+const tools = tool.children;
+for (let i = 0; i < tools.length; i++) {
+  const option = tools[i];
+  option.addEventListener("click", () => {
+      const prevColor = currentColor;
+      if (prevColor) {
+        prevColor.style.border = "0px";
+      }
+      option.style.border = "2px solid black";
+      currentColor = option;
+  })
+}

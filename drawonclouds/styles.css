@@ -50,12 +50,12 @@ h1 {
   column-gap: 15px;
   margin: 10px 0;
 }
-.tools {
+#tools {
   display: flex;
   column-gap: 10px;
 }
 
-.tools button {
+#tools button {
   height: 50px;
   width: 50px;
   background-color: white;
