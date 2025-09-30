@@ -5,6 +5,11 @@ let currentOffsetX = 0;
 let currentOffsetY = 0;
 let currentColor = "";
 
+let drawing = false;
+let erasing = false;
+
+let baseCloudData = null;
+
 const undoStack = [];
 
 const canvas = document.getElementById("cloud-canvas");
@@ -35,6 +40,7 @@ fetch("clouds.json")
         col.style.border = "2px solid lightgrey";
       }
       currentColor = color;
+      erasing = false;
   })}
 });
 
@@ -47,8 +53,6 @@ ctx.lineCap = "round";     // makes ends smooth
 // red.addEventListener("click", () => {
 //   ctx.strokeStyle = "red";
 // })
-
-let drawing = false;
 
 canvas.addEventListener("mousedown", () => drawing = true);
 canvas.addEventListener("mouseup", () => drawing = false);
@@ -69,7 +73,25 @@ canvas.addEventListener("mousemove", (e) => {
   ctx.beginPath();
   ctx.moveTo(lastX, lastY);
   ctx.lineTo(e.offsetX, e.offsetY);
+if (erasing && currentCloudImage) {
+  const brushSize = 50; // circle diameter
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(e.offsetX, e.offsetY, brushSize / 2, 0, Math.PI * 2);
+  ctx.clip();
+  ctx.drawImage(
+    currentCloudImage,
+    currentOffsetX,
+    currentOffsetY,
+    currentDrawWidth,
+    currentDrawHeight
+  );
+  ctx.restore();
+} else {
   ctx.stroke();
+}
+
+
   lastX = e.offsetX;
   lastY = e.offsetY;
 });
@@ -93,7 +115,24 @@ canvas.addEventListener("touchmove", (e) => {
   ctx.beginPath();
   ctx.moveTo(lastX, lastY);
   ctx.lineTo(x, y);
+if (erasing && currentCloudImage) {
+  const brushSize = 50; // circle diameter
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(e.offsetX, e.offsetY, brushSize / 2, 0, Math.PI * 2);
+  ctx.clip();
+  ctx.drawImage(
+    currentCloudImage,
+    currentOffsetX,
+    currentOffsetY,
+    currentDrawWidth,
+    currentDrawHeight
+  );
+  ctx.restore();
+} else {
   ctx.stroke();
+}
+
 
   lastX = x;
   lastY = y;
@@ -116,25 +155,28 @@ function loadCloud() {
     const random = images[Math.floor(Math.random() * images.length)];
     const img = new Image();
     img.src = "clouds/" + random; // adjust path to where files are stored
-    img.onload = () => {
-      const canvasAspect = canvas.width / canvas.height;
-      const imgAspect = img.width / img.height;
+img.onload = () => {
+  const canvasAspect = canvas.width / canvas.height;
+  const imgAspect = img.width / img.height;
 
-      if (imgAspect > canvasAspect) {
-        currentDrawHeight = canvas.height;
-        currentDrawWidth = img.width * (canvas.height / img.height);
-        currentOffsetX = (canvas.width - currentDrawWidth) / 2;
-        currentOffsetY = 0;
-      } else {
-        currentDrawWidth = canvas.width;
-        currentDrawHeight = img.height * (canvas.width / img.width);
-        currentOffsetX = 0;
-        currentOffsetY = (canvas.height - currentDrawHeight) / 2;
-      }
+  if (imgAspect > canvasAspect) {
+    currentDrawHeight = canvas.height;
+    currentDrawWidth = img.width * (canvas.height / img.height);
+    currentOffsetX = (canvas.width - currentDrawWidth) / 2;
+    currentOffsetY = 0;
+  } else {
+    currentDrawWidth = canvas.width;
+    currentDrawHeight = img.height * (canvas.width / img.width);
+    currentOffsetX = 0;
+    currentOffsetY = (canvas.height - currentDrawHeight) / 2;
+  }
 
-      currentCloudImage = img; // store the actual Image object
-      ctx.drawImage(img, currentOffsetX, currentOffsetY, currentDrawWidth, currentDrawHeight);
-    };
+  currentCloudImage = img;
+  ctx.drawImage(img, currentOffsetX, currentOffsetY, currentDrawWidth, currentDrawHeight);
+
+  // ✅ save snapshot AFTER the cloud is drawn
+  baseCloudData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+};
   });
 }
 
@@ -165,4 +207,10 @@ download.addEventListener("click", () => {
   link.download = "cloud-drawing.png";         // filename
   link.href = canvas.toDataURL("image/png"); // get canvas as PNG
   link.click();
+});
+
+const eraser = document.getElementById("eraser");
+
+eraser.addEventListener("click", () => {
+  erasing = true;
 });
