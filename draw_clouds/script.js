@@ -80,6 +80,7 @@ canvas.addEventListener("touchstart", (e) => {
   drawing = true;
   lastX = touch.clientX - canvas.getBoundingClientRect().left;
   lastY = touch.clientY - canvas.getBoundingClientRect().top;
+  undoStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
 });
 
 canvas.addEventListener("touchmove", (e) => {
