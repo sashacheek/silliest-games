@@ -119,7 +119,7 @@ if (erasing && currentCloudImage) {
   const brushSize = 50; // circle diameter
   ctx.save();
   ctx.beginPath();
-  ctx.arc(e.offsetX, e.offsetY, brushSize / 2, 0, Math.PI * 2);
+  ctx.arc(x, y, brushSize / 2, 0, Math.PI * 2);
   ctx.clip();
   ctx.drawImage(
     currentCloudImage,
@@ -213,18 +213,13 @@ const eraser = document.getElementById("eraser");
 
 eraser.addEventListener("click", () => {
   erasing = true;
+
+  const prevColor = currentColor;
+    if (prevColor) {
+      prevColor.style.border = "0px";
+    }
+    option.style.border = "2px solid black";
+    currentColor = option;
 });
 
-const tool = document.getElementById("tools");
-const tools = tool.children;
-for (let i = 0; i < tools.length; i++) {
-  const option = tools[i];
-  option.addEventListener("click", () => {
-      const prevColor = currentColor;
-      if (prevColor) {
-        prevColor.style.border = "0px";
-      }
-      option.style.border = "2px solid black";
-      currentColor = option;
-  })
-}
+const tool = document.getElementById("eraser");
