@@ -218,8 +218,8 @@ eraser.addEventListener("click", () => {
     if (prevColor) {
       prevColor.style.border = "0px";
     }
-    option.style.border = "2px solid black";
-    currentColor = option;
+    eraser.style.border = "2px solid black";
+    currentColor = eraser;
 });
 
 const tool = document.getElementById("eraser");
