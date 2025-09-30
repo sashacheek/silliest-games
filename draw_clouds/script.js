@@ -74,6 +74,33 @@ canvas.addEventListener("mousemove", (e) => {
   lastY = e.offsetY;
 });
 
+canvas.addEventListener("touchstart", (e) => {
+  e.preventDefault(); // stop scrolling
+  const touch = e.touches[0];
+  drawing = true;
+  lastX = touch.clientX - canvas.getBoundingClientRect().left;
+  lastY = touch.clientY - canvas.getBoundingClientRect().top;
+});
+
+canvas.addEventListener("touchmove", (e) => {
+  e.preventDefault();
+  if (!drawing) return;
+  const touch = e.touches[0];
+  const x = touch.clientX - canvas.getBoundingClientRect().left;
+  const y = touch.clientY - canvas.getBoundingClientRect().top;
+
+  ctx.beginPath();
+  ctx.moveTo(lastX, lastY);
+  ctx.lineTo(x, y);
+  ctx.stroke();
+
+  lastX = x;
+  lastY = y;
+});
+
+canvas.addEventListener("touchend", () => drawing = false);
+canvas.addEventListener("touchcancel", () => drawing = false);
+
 const newCloud = document.getElementById("new-cloud");
 
 newCloud.addEventListener("click", () => {
