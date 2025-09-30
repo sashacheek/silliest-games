@@ -62,3 +62,36 @@ h1 {
   border: none;
   border-radius: 5px;
 }
+
+footer {
+  margin-top: 50px
+}
+
+footer a {
+  height: 40px;
+  width: fit-content;
+  display: flex;
+  margin: 0 auto;
+  color: white;
+  align-items: center;
+  font-size: 24px;
+  padding: 10px 15px;
+  text-decoration: none;
+  column-gap: 8px;
+  border: 2px solid white;
+  /* background-color: rgba(65, 67, 124, 1); */
+  border-radius: 5px;
+  font-family: "Margarine", sans-serif;
+}
+
+footer a:hover {
+  background-color: rgb(56, 75, 137);
+  box-shadow: 5px 5px 5px 5px rgb(62, 67, 101);
+  font-size: 28px;
+    height: 45px;
+}
+
+footer a img {
+  height: 100%;
+  width: auto;
+}
